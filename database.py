@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = f"postgresql://postgres:arsalan%40512@localhost:5432/products"
+SQLALCHEMY_DATABASE_URL = f"postgresql://postgres:arsalan%40512@localhost:5432/Store_System"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
