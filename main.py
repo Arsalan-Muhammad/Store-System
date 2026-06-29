@@ -72,7 +72,7 @@ def update(UpdatedProduct: schemas.updateproduct , id: int , db : Session = Depe
     if not product:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail = f"Product With id : {id} does not exists")
 
-    product['price'] = updated_product.price
-    product['quantity'] = updated_product.quantity
+    product.price = updated_product.price
+    product.quantity = updated_product.quantity
 
     return {"updated_product" : product}
