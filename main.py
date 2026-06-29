@@ -41,3 +41,12 @@ def add_product(
         "message": "New product added",
         "product": new_product
     }
+
+@app.get("/get-product/{id}")
+def get_product(id: int , db : Session = Depends(get_db)):
+    post = db.query(models.Products).filter(models.Products.id == id).first()
+
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail=f"Cannot Find Product with id : {id}")
+    
+    return post
