@@ -44,9 +44,18 @@ def add_product(
 
 @app.get("/get-product/{id}")
 def get_product(id: int , db : Session = Depends(get_db)):
-    post = db.query(models.Products).filter(models.Products.id == id).first()
+    product = db.query(models.Products).filter(models.Products.id == id).first()
 
-    if not post:
+    if not product:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail=f"Cannot Find Product with id : {id}")
     
-    return post
+    return product
+
+@app.get("/get-all-products")
+def all_products(db : Session = Depends(get_db)):
+    products = db.query(models.Products).all()
+
+    if not products:
+        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT , detail="No Product Found")
+    
+    return products
