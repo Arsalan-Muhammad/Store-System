@@ -4,7 +4,7 @@ import schemas
 import models
 from database import get_db , engine
 from sqlalchemy.orm import Session
-from .. import auth
+import auth
 
 router = APIRouter(tags=["Admin Actions"])
 @router.post("/add-product", status_code=status.HTTP_201_CREATED)
