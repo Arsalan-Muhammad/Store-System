@@ -5,8 +5,8 @@ from jose import jwt , JWTError
 from fastapi.security import OAuth2PasswordBearer
 from jwt import JWT
 import schemas
-from .schemas import TokenData
-from .routes import auths
+from schemas import TokenData
+from routes import auths
 SECRET_KEY = "sgi3w976s4wedfidfghjfgharsalan"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 1080
