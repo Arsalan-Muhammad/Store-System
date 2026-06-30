@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from pickletools import read_uint1
 from fastapi import Depends, HTTPException, status
-from jose import JWTError, jwt
+from jose import jwt , JWTError
 from fastapi.security import OAuth2PasswordBearer
 from jwt import JWT
 import schemas

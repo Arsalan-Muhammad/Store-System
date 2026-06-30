@@ -4,12 +4,14 @@ import schemas
 import models
 from database import get_db , engine
 from sqlalchemy.orm import Session
+from .. import auth
 
 router = APIRouter(tags=["Admin Actions"])
 @router.post("/add-product", status_code=status.HTTP_201_CREATED)
 def add_product(
     product: schemas.CreateProduct,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(auth.get_current_user)
 ):
 
     existing_product = db.query(models.Products).filter(
@@ -39,7 +41,12 @@ def add_product(
     }
 
 @router.get("/get-product/{id}")
-def get_product(id: int , db : Session = Depends(get_db)):
+def get_product(
+    id: int , 
+    product: schemas.CreateProduct,
+    db: Session = Depends(get_db),
+    current_user = Depends(auth.get_current_user)
+    ):
     product = db.query(models.Products).filter(models.Products.id == id).first()
 
     if not product:
@@ -48,7 +55,10 @@ def get_product(id: int , db : Session = Depends(get_db)):
     return product
 
 @router.get("/get-all-products")
-def all_products(db : Session = Depends(get_db)):
+def all_products(
+    db : Session = Depends(get_db),
+    current_user = Depends(auth.get_current_user)              
+):
     products = db.query(models.Products).all()
 
     if not products:
@@ -57,7 +67,12 @@ def all_products(db : Session = Depends(get_db)):
     return products
 
 @router.put("/edit-product/{id}")
-def update(UpdatedProduct: schemas.updateproduct , id: int , db : Session = Depends(get_db)):
+def update(
+    UpdatedProduct: schemas.updateproduct , 
+    id: int , 
+    db : Session = Depends(get_db),
+    current_user = Depends(auth.get_current_user)
+):
     updated_product = models.Products(**UpdatedProduct.dict())
 
     product = db.query(models.Products).filter(models.Products.id == id).first()
