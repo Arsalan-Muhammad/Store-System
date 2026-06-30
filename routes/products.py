@@ -5,7 +5,7 @@ import models
 from database import get_db , engine
 from sqlalchemy.orm import Session
 
-router = APIRouter(tags=["Products"])
+router = APIRouter(tags=["Admin Actions"])
 @router.post("/add-product", status_code=status.HTTP_201_CREATED)
 def add_product(
     product: schemas.CreateProduct,

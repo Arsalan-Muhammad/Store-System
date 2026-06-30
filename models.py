@@ -11,3 +11,10 @@ class Products(Base):
     price = Column(Float , nullable=False , default=0)
     category = Column(String , nullable=False)
     quantity = Column(Integer , nullable=False)
+
+class Users(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, nullable=False)
+    email = Column(String , nullable=False , unique=True)
+    password = Column(String , nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True), server_default=text('now()'), nullable=False)     
