@@ -7,7 +7,7 @@ from datetime import datetime
 class CreateProduct(BaseModel):
     name: str
     price : float
-    category : str
+    category : Optional[str]
     quantity: int
 
 class updateproduct(BaseModel):
