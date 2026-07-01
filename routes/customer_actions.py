@@ -1,3 +1,5 @@
+from email.policy import HTTP
+
 from fastapi import Depends, FastAPI , HTTPException , status , APIRouter
 from fastapi.routing import APIRoute
 from pydantic import BaseModel
@@ -12,18 +14,22 @@ class BuyItem(BaseModel):
     quantity : int
 router = APIRouter(tags=["Users-actions"])
 
-@router.get("buy-item/{name}")
+@router.post("/buy-item/{name}")
 def buy_item(name : str , buy : BuyItem , db : Session = Depends(get_db)):
     product = db.query(models.Products).filter(models.Products.name == name).first()
 
+    if buy.quantity <= 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST , detail="Quantity Is 0 enter Quantity >= 1")
+    
     if not product:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="Sorry The Product Is Not Available Right Now!")
+    pr = product.price * buy.quantity
     
-    if buy.price < product.price: #pyright:ignore
+    if buy.price < pr: #pyright:ignore
         raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE , detail="The price given by you is not Acceptable")
     
-    if buy.price > product.price: #pyright:ignore
-        rp = product.price - buy.price
+    if buy.price > pr: #pyright:ignore
+        rp = buy.price - product.price
         return {"Your Item" : product , "Remaining Money" : rp}
     
     return {"Your Item" : product}
