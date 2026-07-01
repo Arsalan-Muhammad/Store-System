@@ -23,13 +23,11 @@ def buy_item(name : str , buy : BuyItem , db : Session = Depends(get_db)):
     
     if not product:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="Sorry The Product Is Not Available Right Now!")
-    pr = product.price * buy.quantity
-    
-    if buy.price < pr: #pyright:ignore
-        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE , detail="The price given by you is not Acceptable")
+    pr = round(product.price * buy.quantity, 2)
+ 
     
     if buy.price > pr: #pyright:ignore
-        rp = buy.price - product.price
+        rp = buy.price - pr
         return {"Your Item" : product , "Remaining Money" : rp}
     
     return {"Your Item" : product}
