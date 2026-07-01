@@ -7,14 +7,29 @@ from sqlalchemy.orm import Session
 import auth
 
 router = APIRouter(tags=["Admin Actions"])
-@router.post("products", status_code=status.HTTP_201_CREATED)
+@router.post("/products", status_code=status.HTTP_201_CREATED)
 def add_product(
 
     product: schemas.CreateProduct,
     db: Session = Depends(get_db),
     current_user = Depends(auth.get_current_user)
 ):
+    user = db.query(models.Users).filter(
+    models.Users.id == current_user.id
+).first()
 
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found"
+        )
+
+    if user.role != "Admin": #pyright:ignore
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You Are Not The Admin To Perform This Action"
+            )
+    
     existing_product = db.query(models.Products).filter(
         models.Products.name == product.name
     ).first()
