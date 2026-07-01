@@ -23,7 +23,7 @@ def buy_item(name : str , buy : BuyItem , db : Session = Depends(get_db)):
     
     if not product:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="Sorry The Product Is Not Available Right Now!")
-    pr = round(product.price * buy.quantity, 2)
+    pr = round(product.price * buy.quantity, 2) #pyright:ignore
  
     
     if buy.price > pr: #pyright:ignore
