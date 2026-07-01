@@ -7,8 +7,9 @@ from sqlalchemy.orm import Session
 import auth
 
 router = APIRouter(tags=["Admin Actions"])
-@router.post("/add-product", status_code=status.HTTP_201_CREATED)
+@router.post("products", status_code=status.HTTP_201_CREATED)
 def add_product(
+
     product: schemas.CreateProduct,
     db: Session = Depends(get_db),
     current_user = Depends(auth.get_current_user)
@@ -40,33 +41,7 @@ def add_product(
         "product": new_product
     }
 
-@router.get("/get-product/{id}")
-def get_product(
-    id: int , 
-    product: schemas.CreateProduct,
-    db: Session = Depends(get_db),
-    current_user = Depends(auth.get_current_user)
-    ):
-    product = db.query(models.Products).filter(models.Products.id == id).first()
-
-    if not product:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail=f"Cannot Find Product with id : {id}")
-    
-    return product
-
-@router.get("/get-all-products")
-def all_products(
-    db : Session = Depends(get_db),
-    current_user = Depends(auth.get_current_user)              
-):
-    products = db.query(models.Products).all()
-
-    if not products:
-        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT , detail="No Product Found")
-    
-    return products
-
-@router.put("/edit-product/{id}")
+@router.put("/products/{id}")
 def update(
     UpdatedProduct: schemas.updateproduct , 
     id: int , 

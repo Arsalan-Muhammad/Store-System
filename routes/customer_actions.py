@@ -5,6 +5,7 @@ import schemas
 import models
 from database import get_db
 from sqlalchemy.orm import Session
+import auth
 
 class BuyItem(BaseModel):
     price : float
@@ -26,4 +27,3 @@ def buy_item(name : str , buy : BuyItem , db : Session = Depends(get_db)):
         return {"Your Item" : product , "Remaining Money" : rp}
     
     return {"Your Item" : product}
-    
