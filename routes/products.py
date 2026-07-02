@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI , HTTPException , status , APIRouter
+from fastapi import Depends, FastAPI , HTTPException , status , APIRouter , UploadFile , File
 from pydantic import Tag
 import schemas 
 import models
@@ -9,8 +9,8 @@ import auth
 router = APIRouter(tags=["Admin Actions"])
 @router.post("/products", status_code=status.HTTP_201_CREATED)
 def add_product(
-
     product: schemas.CreateProduct,
+    file: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user = Depends(auth.get_current_user)
 ):
