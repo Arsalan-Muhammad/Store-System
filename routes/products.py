@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI , HTTPException , status , APIRouter , UploadFile , File
+from fastapi import Depends, FastAPI , HTTPException , status , APIRouter , UploadFile , File , Form
 from pydantic import Tag
 import schemas 
 import models
@@ -7,55 +7,31 @@ from sqlalchemy.orm import Session
 import auth
 
 router = APIRouter(tags=["Admin Actions"])
-@router.post("/products", status_code=status.HTTP_201_CREATED)
-def add_product(
-    product: schemas.CreateProduct,
+
+@router.post("/products")
+async def add_product(
+    name: str = Form(...),
+    price: float = Form(...),
+    category: str = Form(...),
+    quantity: int = Form(...),
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
-    current_user = Depends(auth.get_current_user)
+    current_user=Depends(auth.get_current_user)
 ):
-    user = db.query(models.Users).filter(
-    models.Users.id == current_user.id
-).first()
+    image = await file.read()
 
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found"
-        )
-
-    if user.role != "Admin": #pyright:ignore
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="You Are Not The Admin To Perform This Action"
-            )
-    
-    existing_product = db.query(models.Products).filter(
-        models.Products.name == product.name
-    ).first()
-
-    if existing_product:
-        existing_product.quantity += product.quantity #pyright:ignore
-
-        db.commit()
-        db.refresh(existing_product)
-
-        return {
-            "message": "Product quantity updated",
-            "product": existing_product
-        }
-
-    new_product = models.Products(**product.dict())
+    new_product = models.Products(
+        name=name,
+        price=price,
+        category=category,
+        quantity=quantity,
+    )
 
     db.add(new_product)
     db.commit()
     db.refresh(new_product)
 
-    return {
-        "message": "New product added",
-        "product": new_product
-    }
-
+    return new_product
 @router.put("/products/{id}")
 def update(
     UpdatedProduct: schemas.updateproduct , 
